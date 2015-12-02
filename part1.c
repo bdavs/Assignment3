@@ -25,7 +25,7 @@ process1()
 //		printf("%d ",counter->value);
 	}
 	printf("Child 1 done execution. The variable is %d\n",counter->value);
-//	exit(0);
+	exit(0);
 
 }
 
@@ -37,13 +37,13 @@ process2()
 //	sleep(1);
 	printf("Child 2 started. The variable is %d\n",counter->value);
 	int j;
-	usleep(150);
+	usleep(160);
 	 for(j = 0; j<100000;j++){
 		counter->value = counter->value +1;
 //		printf("%d ",counter->value);
 	}
 	printf("Child 2 done execution. The variable is %d\n",counter->value);
-//	exit(0);
+	exit(0);
 
 }
 
@@ -77,7 +77,9 @@ perror("shmget"); exit(1);
 if((counter = (shared_mem *)shmat(shmid, NULL, 0)) == (shared_mem *) -1){
 perror("shmat"); exit(1);
 }
-
+int results[100];
+int k =0;
+for(k=0;k<100;k++){
 /*initializing shared memory to 0 */ counter->value = 0;
 
 
@@ -101,10 +103,21 @@ if(pid1 == 0){
 		/* parent process reports value of counter */
 		printf("The counter variable is: %d\n",counter->value);
 		/* parent process exits safely */
-		exit(0);
+		results[k] = counter->value;
 		/*deallocate shared memory */
 	}
 }
+}
+int exactly=0,lower=0,higher=0;
+for(k=0;k<100;k++){
+	if(results[k] == 200000)
+		exactly++;
+	if(results[k] < 200000)
+		lower++;
+	if(results[k] > 200000)
+		higher++;
+}
+printf("Percentage higher: %d\nPercentage lower: %d\nPercentage exactly: %d\n",higher,lower,exactly);
 if(shmctl(shmid, IPC_RMID, (struct shmid_ds *)0)== -1){ perror("shmctl");
 	exit(-1);
 }
