@@ -38,7 +38,7 @@ process2()
 //	sleep(1);
 	printf("Child 2 started. The variable is %d\n",counter->value);
 	int j;
-	usleep(300);
+	usleep(1000);
 	 for(j = 0; j<100000;j++){
 		counter->value = counter->value +1;
 //		printf("%d ",counter->value);
